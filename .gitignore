@@ -1,0 +1,12 @@
+# Secretos: nunca al repo
+.env
+.env.*
+!.env.example
+*.local
+
+# Dependencias y builds
+node_modules/
+dist/
+
+# Archivos temporales de pruebas
+.tmp-*

@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Rol {
+  ADMIN
+  CHOFER
+  RESPONDIENTE
+}
+
+// MECANICO: lo completa el chofer. MATERIAL: lo completa el respondiente.
+enum TipoControl {
+  MECANICO
+  MATERIAL
+}
+
+// Cómo se responde cada ítem de una sección de la planilla.
+enum TipoRespuesta {
+  SI_NO_ESTADO // SI / NO / N/A + estado Bueno-Regular-Malo (control mecánico)
+  SI_NO_NIVEL // SI / NO / N/A + nivel Reserva-Medio-Full (motor)
+  SI_NO_HABILITACION // SI / NO + estado Bueno-Malo-Inoperativo (habilitación pre hospitalaria)
+  CANTIDAD // Debe haber / Existente (material menor)
+}
+
+enum EstadoControl {
+  PENDIENTE // enviado, espera revisión del admin
+  APROBADO
+  OBSERVADO // el admin lo devolvió con un comentario; el autor lo corrige y reenvía
+}
+
+model Usuario {
+  id                String    @id @default(uuid(7)) @db.Uuid
+  usuario           String    @unique
+  nombre            String
+  codigo            String? // código de bombero (VK21-xx)
+  rol               Rol
+  contrasenhaHash   String    @map("contrasenha_hash")
+  activo            Boolean   @default(true)
+  creadoEl          DateTime  @default(now()) @map("creado_el")
+  modificadoEl      DateTime  @updatedAt @map("modificado_el")
+  controles         Control[] @relation("autor")
+  controlesRevisados Control[] @relation("revisor")
+
+  @@map("usuario")
+}
+
+model Movil {
+  id          String    @id @default(uuid(7)) @db.Uuid
+  codigo      String    @unique // AM21, etc.
+  descripcion String?
+  activo      Boolean   @default(true)
+  creadoEl    DateTime  @default(now()) @map("creado_el")
+  controles   Control[]
+
+  @@map("movil")
+}
+
+model Seccion {
+  id            String        @id @default(uuid(7)) @db.Uuid
+  tipoControl   TipoControl   @map("tipo_control")
+  nombre        String
+  orden         Int
+  tipoRespuesta TipoRespuesta @map("tipo_respuesta")
+  nota          String?
+  items         Item[]
+
+  @@unique([tipoControl, nombre])
+  @@map("seccion")
+}
+
+model Item {
+  id          String        @id @default(uuid(7)) @db.Uuid
+  seccionId   String        @map("seccion_id") @db.Uuid
+  seccion     Seccion       @relation(fields: [seccionId], references: [id])
+  nombre      String
+  orden       Int
+  // Material menor: cantidad mínima que debe haber (null: la planilla no indica, basta con que exista).
+  debeHaber   Int?          @map("debe_haber")
+  unidad      String? // "hojas", etc.
+  // true cuando responder SI es una falla (p. ej. "Pérdida de aceite motor").
+  invertido   Boolean       @default(false)
+  activo      Boolean       @default(true)
+  respuestas  ControlItem[]
+
+  @@unique([seccionId, nombre])
+  @@map("item")
+}
+
+model Control {
+  id                String        @id @default(uuid(7)) @db.Uuid
+  numero            Int           @default(autoincrement()) @unique
+  tipo              TipoControl
+  movilId           String        @map("movil_id") @db.Uuid
+  movil             Movil         @relation(fields: [movilId], references: [id])
+  autorId           String        @map("autor_id") @db.Uuid
+  autor             Usuario       @relation("autor", fields: [autorId], references: [id])
+  fecha             DateTime      @db.Date
+  servicio          String? // servicio / salida al que corresponde
+  // Encabezado propio de cada planilla (grupo, nº, combustible, a cargo, etc.).
+  encabezado        Json          @default("{}")
+  observacion       String?
+  estado            EstadoControl @default(PENDIENTE)
+  cantidadFallas    Int           @default(0) @map("cantidad_fallas")
+  revisorId         String?       @map("revisor_id") @db.Uuid
+  revisor           Usuario?      @relation("revisor", fields: [revisorId], references: [id])
+  revisadoEl        DateTime?     @map("revisado_el")
+  comentarioRevision String?      @map("comentario_revision")
+  creadoEl          DateTime      @default(now()) @map("creado_el")
+  modificadoEl      DateTime      @updatedAt @map("modificado_el")
+  items             ControlItem[]
+
+  @@index([estado, tipo])
+  @@index([movilId, fecha])
+  @@map("control")
+}
+
+model ControlItem {
+  id         String  @id @default(uuid(7)) @db.Uuid
+  controlId  String  @map("control_id") @db.Uuid
+  control    Control @relation(fields: [controlId], references: [id], onDelete: Cascade)
+  itemId     String  @map("item_id") @db.Uuid
+  item       Item    @relation(fields: [itemId], references: [id])
+  respuesta  String? // SI | NO | NA
+  estado     String? // B | R | M | I
+  nivel      String? // R | M | F
+  existente  Int?
+  falla      Boolean @default(false)
+  nota       String?
+
+  @@unique([controlId, itemId])
+  @@map("control_item")
+}
