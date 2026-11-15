@@ -43,7 +43,7 @@ export function CambiarContrasenha() {
         <Campo etiqueta="Repetir nueva contraseña">
           <Entrada type="password" autoComplete="new-password" value={repetir} onChange={(e) => setRepetir(e.target.value)} required />
         </Campo>
-        {repetir && nueva !== repetir && <p className="text-sm text-red-700">Las contraseñas no coinciden</p>}
+        {repetir && nueva !== repetir && <p className="text-sm text-destructive">Las contraseñas no coinciden</p>}
         <MensajeError error={cambiar.error} />
         {cambiar.isSuccess && <p className="text-sm font-medium text-emerald-700">Contraseña actualizada.</p>}
         <Boton type="submit" className="w-full" disabled={nueva !== repetir} cargando={cambiar.isPending}>

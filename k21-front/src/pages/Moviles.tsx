@@ -54,7 +54,7 @@ export function Moviles() {
               <label className="flex items-center gap-2 text-sm">
                 <input
                   type="checkbox"
-                  className="size-4 accent-marca-700"
+                  className="size-4 accent-foreground"
                   checked={edicion.activo}
                   onChange={(e) => setEdicion({ ...edicion, activo: e.target.checked })}
                 />
@@ -78,19 +78,19 @@ export function Moviles() {
 
       <MensajeError error={moviles.error} />
       {moviles.isLoading && <Cargando />}
-      <ul className="divide-y divide-zinc-100 overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-zinc-200">
+      <ul className="divide-y divide-border/60 overflow-hidden rounded-xl bg-card shadow-sm ring-1 ring-border">
         {moviles.data?.map((m) => (
           <li key={m.id}>
             <button
-              className={cx('flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-zinc-50', !m.activo && 'opacity-50')}
+              className={cx('flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-muted', !m.activo && 'opacity-50')}
               onClick={() => {
                 guardar.reset()
                 setEdicion({ id: m.id, codigo: m.codigo, descripcion: m.descripcion ?? '', activo: m.activo })
               }}
             >
               <span className="font-black">{m.codigo}</span>
-              <span className="flex-1 text-sm text-zinc-600">{m.descripcion}</span>
-              {!m.activo && <span className="text-xs text-zinc-500">inactivo</span>}
+              <span className="flex-1 text-sm text-muted-foreground">{m.descripcion}</span>
+              {!m.activo && <span className="text-xs text-muted-foreground">inactivo</span>}
             </button>
           </li>
         ))}

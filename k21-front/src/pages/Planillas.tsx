@@ -21,9 +21,9 @@ export function Planillas() {
         opciones={(['MECANICO', 'MATERIAL'] as const).map((v) => ({ valor: v, nombre: NOMBRE_TIPO[v] }))}
         valor={tipo}
         onChange={(v) => v && setTipo(v)}
-        colores={{ MECANICO: 'bg-marca-700 text-white', MATERIAL: 'bg-marca-700 text-white' }}
+        colores={{ MECANICO: 'bg-primary text-primary-foreground shadow-sm', MATERIAL: 'bg-primary text-primary-foreground shadow-sm' }}
       />
-      <p className="text-sm text-zinc-600">
+      <p className="text-sm text-muted-foreground">
         Los cambios se aplican a los controles nuevos; los ya cargados conservan lo que se respondió. Un ítem desactivado deja de
         pedirse.
       </p>
@@ -47,15 +47,15 @@ function SeccionEditable({ seccion: s }: { seccion: SeccionPlantilla }) {
   })
 
   return (
-    <section className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-zinc-200">
-      <header className="bg-zinc-800 px-4 py-2 text-sm font-bold text-white uppercase">{s.nombre}</header>
-      <ul className="divide-y divide-zinc-100">
+    <section className="overflow-hidden rounded-xl bg-card shadow-sm ring-1 ring-border">
+      <header className="border-l-4 border-primary bg-foreground px-4 py-2 text-sm font-bold text-background uppercase">{s.nombre}</header>
+      <ul className="divide-y divide-border/60">
         {s.items.map((i) => (
           <ItemEditable key={i.id} item={i} cantidad={s.tipoRespuesta === 'CANTIDAD'} onGuardado={refrescar} />
         ))}
       </ul>
       <form
-        className="flex gap-2 border-t border-zinc-100 p-3"
+        className="flex gap-2 border-t border-border/60 p-3"
         onSubmit={(e) => {
           e.preventDefault()
           if (nuevo.trim()) agregar.mutate()
@@ -85,7 +85,7 @@ function ItemEditable({ item: i, cantidad, onGuardado }: { item: ItemPlantilla; 
   const cambiado = nombre.trim() !== i.nombre || (cantidad && debeHaber !== (i.debeHaber?.toString() ?? ''))
 
   return (
-    <li className={cx('flex flex-wrap items-center gap-2 px-4 py-2', !i.activo && 'bg-zinc-50 opacity-60')}>
+    <li className={cx('flex flex-wrap items-center gap-2 px-4 py-2', !i.activo && 'bg-muted/60 opacity-60')}>
       <Entrada className="min-h-9 min-w-48 flex-1 text-sm" value={nombre} onChange={(e) => setNombre(e.target.value)} />
       {cantidad && (
         <Entrada
@@ -111,7 +111,7 @@ function ItemEditable({ item: i, cantidad, onGuardado }: { item: ItemPlantilla; 
       <Boton variante="fantasma" className="min-h-9 text-xs" onClick={() => guardar.mutate({ activo: !i.activo })}>
         {i.activo ? 'Desactivar' : 'Activar'}
       </Boton>
-      {guardar.error && <p className="w-full text-xs text-red-700">{(guardar.error as Error).message}</p>}
+      {guardar.error && <p className="w-full text-xs text-destructive">{(guardar.error as Error).message}</p>}
     </li>
   )
 }

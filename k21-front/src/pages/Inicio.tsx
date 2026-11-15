@@ -22,7 +22,7 @@ export function Inicio() {
   return (
     <div className="space-y-5">
       <section>
-        <h2 className="mb-2 text-sm font-semibold tracking-wide text-zinc-500 uppercase">Nuevo control</h2>
+        <h2 className="mb-2 text-sm font-semibold tracking-wide text-muted-foreground uppercase">Nuevo control</h2>
         <div className="grid gap-3 sm:grid-cols-2">
           {tiposQuePuedeCargar(usuario.rol).map((tipo) => {
             const Icono = ICONO[tipo]
@@ -30,12 +30,12 @@ export function Inicio() {
               <Link
                 key={tipo}
                 to={`/controles/nuevo/${tipo.toLowerCase()}`}
-                className="flex items-center gap-4 rounded-xl bg-marca-700 p-4 text-white shadow-sm transition hover:bg-marca-800 active:scale-[.99]"
+                className="flex items-center gap-4 rounded-xl bg-primary p-4 text-primary-foreground shadow-sm transition hover:bg-primary/85 active:scale-[.99]"
               >
                 <Icono className="size-9 shrink-0" />
                 <div>
                   <p className="text-lg font-bold">{NOMBRE_TIPO[tipo]}</p>
-                  <p className="text-sm text-white/80">{DESCRIPCION[tipo]}</p>
+                  <p className="text-sm text-primary-foreground/75">{DESCRIPCION[tipo]}</p>
                 </div>
               </Link>
             )
@@ -57,9 +57,9 @@ export function Inicio() {
               ] as const
             ).map(([estado, nombre]) => (
               <Link key={estado} to={`/controles?estado=${estado}`}>
-                <Tarjeta className="text-center transition hover:ring-zinc-300">
+                <Tarjeta className="text-center transition hover:ring-input">
                   <p className="text-3xl font-black">{contar(estado)}</p>
-                  <p className="text-xs font-medium text-zinc-600">{nombre}</p>
+                  <p className="text-xs font-medium text-muted-foreground">{nombre}</p>
                 </Tarjeta>
               </Link>
             ))}
@@ -72,13 +72,13 @@ export function Inicio() {
           )}
 
           <section>
-            <h2 className="mb-2 text-sm font-semibold tracking-wide text-zinc-500 uppercase">Estado de los móviles</h2>
+            <h2 className="mb-2 text-sm font-semibold tracking-wide text-muted-foreground uppercase">Estado de los móviles</h2>
             <div className="grid gap-3 sm:grid-cols-2">
               {resumen.data.moviles.map((m) => (
                 <Tarjeta key={m.id}>
                   <div className="mb-3 flex items-baseline gap-2">
                     <p className="text-lg font-black">{m.codigo}</p>
-                    {m.descripcion && <p className="text-sm text-zinc-500">{m.descripcion}</p>}
+                    {m.descripcion && <p className="text-sm text-muted-foreground">{m.descripcion}</p>}
                   </div>
                   <div className="space-y-2">
                     <Ultimo tipo="MECANICO" control={m.mecanico} />
@@ -86,7 +86,7 @@ export function Inicio() {
                   </div>
                 </Tarjeta>
               ))}
-              {resumen.data.moviles.length === 0 && <p className="text-sm text-zinc-500">No hay móviles activos.</p>}
+              {resumen.data.moviles.length === 0 && <p className="text-sm text-muted-foreground">No hay móviles activos.</p>}
             </div>
           </section>
         </>
@@ -97,17 +97,18 @@ export function Inicio() {
 
 function Ultimo({ tipo, control }: { tipo: TipoControl; control: UltimoControl | null }) {
   const contenido = (
-    <div className="flex items-center gap-2 rounded-lg bg-zinc-50 px-3 py-2 text-sm">
-      <ClipboardCheck className="size-4 shrink-0 text-zinc-400" />
-      <span className="flex-1 font-medium">{NOMBRE_TIPO[tipo]}</span>
+    // En el celular: nombre arriba, fecha y etiquetas abajo. Desde sm, todo en una línea.
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 rounded-lg bg-muted/60 px-3 py-2.5 text-sm transition-colors hover:bg-muted">
+      <ClipboardCheck className="size-4 shrink-0 text-muted-foreground/70" />
+      <span className="flex-1 font-medium whitespace-nowrap">{NOMBRE_TIPO[tipo]}</span>
       {control ? (
-        <>
-          <span className="text-xs text-zinc-500">{fechaCorta(control.fecha)}</span>
+        <span className="flex w-full items-center gap-2 pl-6 whitespace-nowrap sm:w-auto sm:pl-0">
+          <span className="text-xs text-muted-foreground">{fechaCorta(control.fecha)}</span>
           <EtiquetaFallas cantidad={control.cantidadFallas} />
           <EtiquetaEstado estado={control.estado} />
-        </>
+        </span>
       ) : (
-        <span className="text-xs text-zinc-400">Sin controles</span>
+        <span className="text-xs text-muted-foreground/70">Sin controles</span>
       )}
     </div>
   )

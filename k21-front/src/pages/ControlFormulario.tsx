@@ -55,7 +55,7 @@ const OPCIONES_RESPUESTA: { valor: Respuesta; nombre: string }[] = [
   { valor: 'NO', nombre: 'NO' },
   { valor: 'NA', nombre: 'N/A' },
 ]
-const COLOR_RESPUESTA = { SI: 'bg-emerald-600 text-white', NO: 'bg-red-600 text-white', NA: 'bg-zinc-500 text-white' }
+const COLOR_RESPUESTA = { SI: 'bg-emerald-600 text-white', NO: 'bg-red-600 text-white', NA: 'bg-muted-foreground text-white' }
 const COLOR_ESTADO = { B: 'bg-emerald-600 text-white', R: 'bg-amber-500 text-white', M: 'bg-red-600 text-white', I: 'bg-red-800 text-white' }
 const COLOR_NIVEL = { F: 'bg-emerald-600 text-white', M: 'bg-amber-500 text-white', R: 'bg-red-600 text-white' }
 const OPCIONES_NIVEL = (['R', 'M', 'F'] as const).map((v) => ({ valor: v, nombre: v }))
@@ -189,12 +189,12 @@ export function ControlFormulario() {
       }}
     >
       <div className="flex items-center gap-2">
-        <Link to={id ? `/controles/${id}` : '/inicio'} className="rounded-md p-1.5 hover:bg-zinc-200">
+        <Link to={id ? `/controles/${id}` : '/inicio'} className="rounded-md p-1.5 hover:bg-muted">
           <ChevronLeft className="size-5" />
         </Link>
         <h1 className="text-xl font-bold">
           {NOMBRE_TIPO[tipo]}
-          {existente.data && <span className="text-zinc-500"> · Nº {existente.data.numero}</span>}
+          {existente.data && <span className="text-muted-foreground"> · Nº {existente.data.numero}</span>}
         </h1>
       </div>
 
@@ -237,7 +237,7 @@ export function ControlFormulario() {
               </Campo>
             </div>
             <div>
-              <span className="mb-1 block text-sm font-medium text-zinc-700">Nivel de combustible</span>
+              <span className="mb-1 block text-sm font-medium text-foreground/80">Nivel de combustible</span>
               <Segmentos
                 opciones={(['R', 'M', 'F'] as const).map((v) => ({ valor: v, nombre: NOMBRE_NIVEL[v] }))}
                 valor={form.encabezado.combustible}
@@ -263,7 +263,7 @@ export function ControlFormulario() {
       </Tarjeta>
 
       {tipo === 'MECANICO' && (
-        <p className="px-1 text-xs text-zinc-500">
+        <p className="px-1 text-xs text-muted-foreground">
           N/A: No aplica · B: Bueno · R: Regular · M: Malo. Marcá lo que corresponda; con "Todo OK" completás lo que falta de
           una sección.
         </p>
@@ -281,18 +281,18 @@ export function ControlFormulario() {
 
       <MensajeError error={guardar.error} />
 
-      <div className="fixed inset-x-0 bottom-16 z-10 border-t border-zinc-200 bg-white/95 px-4 py-3 backdrop-blur md:bottom-0">
+      <div className="fixed inset-x-0 bottom-16 z-10 border-t border-border bg-card/95 px-4 py-3 backdrop-blur md:bottom-0">
         <div className="mx-auto flex max-w-5xl items-center gap-3">
           <div className="min-w-0 flex-1 text-sm">
             <p className="font-semibold">
               {completos}/{total} ítems
             </p>
             {fallas > 0 ? (
-              <p className="flex items-center gap-1 text-xs font-medium text-red-700">
+              <p className="flex items-center gap-1 text-xs font-medium text-destructive">
                 <AlertTriangle className="size-3.5" /> {fallas} con falla
               </p>
             ) : (
-              <p className="text-xs text-zinc-500">{listo ? 'Listo para enviar' : 'Completá todos los ítems'}</p>
+              <p className="text-xs text-muted-foreground">{listo ? 'Listo para enviar' : 'Completá todos los ítems'}</p>
             )}
           </div>
           <Boton type="submit" disabled={!listo} cargando={guardar.isPending}>
@@ -319,31 +319,31 @@ function Seccion({
   const estados = ESTADOS_POR_TIPO[s.tipoRespuesta]
 
   return (
-    <section className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-zinc-200">
-      <header className="flex items-center gap-2 bg-zinc-800 px-4 py-2.5 text-white">
+    <section className="overflow-hidden rounded-xl bg-card shadow-sm ring-1 ring-border">
+      <header className="flex items-center gap-2 border-l-4 border-primary bg-foreground px-4 py-2.5 text-background">
         <div className="min-w-0 flex-1">
           <h2 className="text-sm font-bold uppercase">{s.nombre}</h2>
-          {s.nota && <p className="text-xs text-white/70">{s.nota}</p>}
+          {s.nota && <p className="text-xs text-background/70">{s.nota}</p>}
         </div>
-        <span className={cx('text-xs font-semibold', hechos === s.items.length ? 'text-emerald-300' : 'text-white/70')}>
+        <span className={cx('text-xs font-semibold', hechos === s.items.length ? 'text-emerald-300' : 'text-background/70')}>
           {hechos}/{s.items.length}
         </span>
         {hechos < s.items.length && (
-          <button type="button" onClick={onTodoOk} className="flex items-center gap-1 rounded-md bg-white/15 px-2 py-1 text-xs font-semibold hover:bg-white/25">
+          <button type="button" onClick={onTodoOk} className="flex items-center gap-1 rounded-md bg-background/15 px-2 py-1 text-xs font-semibold hover:bg-background/25">
             <CheckCheck className="size-3.5" /> Todo OK
           </button>
         )}
       </header>
 
       {s.tipoRespuesta === 'CANTIDAD' && (
-        <div className="flex border-b border-zinc-100 px-4 py-1.5 text-[11px] font-semibold text-zinc-500 uppercase">
+        <div className="flex border-b border-border/60 px-4 py-1.5 text-[11px] font-semibold text-muted-foreground uppercase">
           <span className="flex-1">Ítem</span>
           <span className="w-20 text-center">Debe haber</span>
           <span className="w-32 text-center">Existente</span>
         </div>
       )}
 
-      <ul className="divide-y divide-zinc-100">
+      <ul className="divide-y divide-border/60">
         {s.items.map((i) => {
           const r = respuestas[i.id]
           const falla = esFalla(s.tipoRespuesta, i, r)
@@ -352,7 +352,7 @@ function Seccion({
               {s.tipoRespuesta === 'CANTIDAD' ? (
                 <div className="flex items-center gap-2">
                   <span className={cx('flex-1 text-sm', falla && 'font-semibold text-red-800')}>{i.nombre}</span>
-                  <span className="w-20 text-center text-xs text-zinc-600">
+                  <span className="w-20 text-center text-xs text-muted-foreground">
                     {i.debeHaber != null ? `${i.debeHaber}${i.unidad ? ` ${i.unidad}` : ''}` : '—'}
                   </span>
                   <Contador valor={r?.existente ?? null} onChange={(v) => onCambio(i.id, { existente: v })} />
@@ -361,7 +361,7 @@ function Seccion({
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                   <span className={cx('min-w-40 flex-1 text-sm', falla && 'font-semibold text-red-800')}>
                     {i.nombre}
-                    {i.invertido && <span className="ml-1 text-xs font-normal text-zinc-500">(SI = falla)</span>}
+                    {i.invertido && <span className="ml-1 text-xs font-normal text-muted-foreground">(SI = falla)</span>}
                   </span>
                   <Segmentos
                     opciones={s.tipoRespuesta === 'SI_NO_HABILITACION' ? OPCIONES_RESPUESTA.slice(0, 2) : OPCIONES_RESPUESTA}
@@ -411,14 +411,14 @@ function Contador({ valor, onChange }: { valor: number | null; onChange: (v: num
     <div className="flex w-32 items-center justify-center gap-1">
       <button
         type="button"
-        className="grid size-9 place-items-center rounded-md bg-zinc-100 ring-1 ring-zinc-200 active:bg-zinc-200"
+        className="grid size-9 place-items-center rounded-md bg-muted ring-1 ring-border active:bg-border"
         onClick={() => onChange(Math.max(0, (valor ?? 1) - 1))}
       >
         <Minus className="size-4" />
       </button>
       <input
         inputMode="numeric"
-        className="h-9 w-12 rounded-md text-center text-base font-semibold ring-1 ring-zinc-300 focus:ring-2 focus:ring-marca-600 focus:outline-none"
+        className="h-9 w-12 rounded-md text-center text-base font-semibold ring-1 ring-input focus:ring-2 focus:ring-ring focus:outline-none"
         value={valor ?? ''}
         onChange={(e) => {
           const t = e.target.value.replace(/\D/g, '')
@@ -427,7 +427,7 @@ function Contador({ valor, onChange }: { valor: number | null; onChange: (v: num
       />
       <button
         type="button"
-        className="grid size-9 place-items-center rounded-md bg-zinc-100 ring-1 ring-zinc-200 active:bg-zinc-200"
+        className="grid size-9 place-items-center rounded-md bg-muted ring-1 ring-border active:bg-border"
         onClick={() => onChange((valor ?? 0) + 1)}
       >
         <Plus className="size-4" />

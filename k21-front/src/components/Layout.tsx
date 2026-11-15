@@ -75,7 +75,7 @@ export function Layout() {
       </main>
 
       {/* Navegación inferior en el celular */}
-      <nav className="fixed inset-x-0 bottom-0 z-20 flex border-t border-zinc-200 bg-white md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-20 flex border-t border-border bg-card pb-[env(safe-area-inset-bottom)] shadow-[0_-2px_8px_rgb(0_0_0/0.04)] md:hidden">
         {enlaces.map((e) => (
           <NavLink
             key={e.a}
@@ -83,8 +83,10 @@ export function Layout() {
             end={e.a === '/inicio'}
             className={({ isActive }) =>
               cx(
-                'flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium',
-                isActive ? 'text-foreground [&_svg]:text-marca-600' : 'text-zinc-500',
+                'relative flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium transition-colors',
+                isActive
+                  ? 'font-semibold text-foreground before:absolute before:top-0 before:left-1/2 before:h-0.5 before:w-10 before:-translate-x-1/2 before:rounded-full before:bg-primary [&_svg]:text-marca-600'
+                  : 'text-muted-foreground hover:text-foreground',
               )
             }
           >

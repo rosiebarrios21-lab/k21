@@ -63,11 +63,11 @@ export function ControlDetallePagina() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
-        <Link to="/controles" className="rounded-md p-1.5 hover:bg-zinc-200 print:hidden">
+        <Link to="/controles" className="rounded-md p-1.5 hover:bg-muted print:hidden">
           <ChevronLeft className="size-5" />
         </Link>
         <h1 className="flex-1 text-xl font-bold">
-          {NOMBRE_TIPO[c.tipo]} <span className="text-zinc-500">· Nº {c.numero}</span>
+          {NOMBRE_TIPO[c.tipo]} <span className="text-muted-foreground">· Nº {c.numero}</span>
         </h1>
         <EtiquetaEstado estado={c.estado} />
         <EtiquetaFallas cantidad={c.cantidadFallas} />
@@ -88,7 +88,7 @@ export function ControlDetallePagina() {
         </div>
       )}
       {c.estado === 'PENDIENTE' && c.comentarioRevision && (
-        <div className="rounded-xl bg-zinc-50 p-3 text-sm text-zinc-700 ring-1 ring-zinc-200">
+        <div className="rounded-xl bg-muted/60 p-3 text-sm text-foreground/80 ring-1 ring-border">
           <p className="font-semibold">Reenviado tras esta observación anterior:</p>
           <p className="whitespace-pre-line">{c.comentarioRevision}</p>
         </div>
@@ -100,14 +100,14 @@ export function ControlDetallePagina() {
             .filter(([, v]) => v)
             .map(([k, v]) => (
               <div key={k}>
-                <dt className="text-xs text-zinc-500">{k}</dt>
+                <dt className="text-xs text-muted-foreground">{k}</dt>
                 <dd className="font-medium">{v}</dd>
               </div>
             ))}
         </dl>
         {c.observacion && (
-          <div className="mt-3 border-t border-zinc-100 pt-3 text-sm">
-            <p className="text-xs text-zinc-500">Observación</p>
+          <div className="mt-3 border-t border-border/60 pt-3 text-sm">
+            <p className="text-xs text-muted-foreground">Observación</p>
             <p className="whitespace-pre-line">{c.observacion}</p>
           </div>
         )}
@@ -115,7 +115,7 @@ export function ControlDetallePagina() {
 
       <div className="flex flex-wrap items-center gap-2 print:hidden">
         <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" className="size-4 accent-marca-700" checked={soloFallas} onChange={(e) => setSoloFallas(e.target.checked)} />
+          <input type="checkbox" className="size-4 accent-foreground" checked={soloFallas} onChange={(e) => setSoloFallas(e.target.checked)} />
           Mostrar solo fallas
         </label>
         <div className="flex-1" />
@@ -135,12 +135,12 @@ export function ControlDetallePagina() {
         const items = soloFallas ? s.items.filter((i) => i.falla) : s.items
         if (items.length === 0) return null
         return (
-          <section key={s.id} className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-zinc-200 print:break-inside-avoid">
-            <header className="flex items-center bg-zinc-800 px-4 py-2 text-white">
+          <section key={s.id} className="overflow-hidden rounded-xl bg-card shadow-sm ring-1 ring-border print:break-inside-avoid">
+            <header className="flex items-center border-l-4 border-primary bg-foreground px-4 py-2 text-background">
               <h2 className="flex-1 text-sm font-bold uppercase">{s.nombre}</h2>
-              {s.tipoRespuesta === 'CANTIDAD' && <span className="text-[11px] text-white/70">DEBE HABER / EXISTENTE</span>}
+              {s.tipoRespuesta === 'CANTIDAD' && <span className="text-[11px] text-background/70">DEBE HABER / EXISTENTE</span>}
             </header>
-            <ul className="divide-y divide-zinc-100">
+            <ul className="divide-y divide-border/60">
               {items.map((i) => (
                 <li key={i.itemId} className={cx('flex items-start gap-3 px-4 py-2 text-sm', i.falla && 'bg-red-50')}>
                   {i.falla ? (
@@ -150,11 +150,11 @@ export function ControlDetallePagina() {
                   )}
                   <div className="min-w-0 flex-1">
                     <p className={cx(i.falla && 'font-semibold text-red-800')}>{i.nombre}</p>
-                    {i.nota && <p className="text-xs text-red-700">{i.nota}</p>}
+                    {i.nota && <p className="text-xs text-destructive">{i.nota}</p>}
                   </div>
-                  <span className={cx('text-right font-semibold whitespace-nowrap', i.falla ? 'text-red-700' : 'text-zinc-700')}>
+                  <span className={cx('text-right font-semibold whitespace-nowrap', i.falla ? 'text-destructive' : 'text-foreground/80')}>
                     {s.tipoRespuesta === 'CANTIDAD' && (
-                      <span className="font-normal text-zinc-500">
+                      <span className="font-normal text-muted-foreground">
                         {i.debeHaber ?? '—'}
                         {i.unidad ? ` ${i.unidad}` : ''} /{' '}
                       </span>

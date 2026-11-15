@@ -103,7 +103,7 @@ export function Usuarios() {
               <label className="flex items-center gap-2 text-sm">
                 <input
                   type="checkbox"
-                  className="size-4 accent-marca-700"
+                  className="size-4 accent-foreground"
                   checked={edicion.activo}
                   onChange={(e) => setEdicion({ ...edicion, activo: e.target.checked })}
                 />
@@ -127,11 +127,11 @@ export function Usuarios() {
 
       <MensajeError error={usuarios.error} />
       {usuarios.isLoading && <Cargando />}
-      <ul className="divide-y divide-zinc-100 overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-zinc-200">
+      <ul className="divide-y divide-border/60 overflow-hidden rounded-xl bg-card shadow-sm ring-1 ring-border">
         {usuarios.data?.map((u) => (
           <li key={u.id}>
             <button
-              className={cx('flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-zinc-50', !u.activo && 'opacity-50')}
+              className={cx('flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-muted', !u.activo && 'opacity-50')}
               onClick={() => {
                 guardar.reset()
                 setEdicion({ id: u.id, email: u.email, nombre: u.nombre, codigo: u.codigo ?? '', rol: u.rol, contrasenha: '', activo: u.activo })
@@ -139,14 +139,14 @@ export function Usuarios() {
             >
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold">
-                  {u.nombre} {u.codigo && <span className="font-normal text-zinc-500">· {u.codigo}</span>}
+                  {u.nombre} {u.codigo && <span className="font-normal text-muted-foreground">· {u.codigo}</span>}
                 </p>
-                <p className="truncate text-xs text-zinc-500">
+                <p className="truncate text-xs text-muted-foreground">
                   {u.email}
                   {!u.activo && ' · inactivo'}
                 </p>
               </div>
-              <span className="rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-semibold text-zinc-700">{NOMBRE_ROL[u.rol]}</span>
+              <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-semibold text-foreground/80">{NOMBRE_ROL[u.rol]}</span>
             </button>
           </li>
         ))}
